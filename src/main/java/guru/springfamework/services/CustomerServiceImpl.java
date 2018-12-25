@@ -2,6 +2,7 @@ package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.CustomerMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
+import guru.springfamework.exceptions.NotFoundException;
 import guru.springfamework.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,6 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
                 .map(customerMapper::customerToCustomerDTO)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotFoundException("Customer with id " + id + " not found"));
     }
 }

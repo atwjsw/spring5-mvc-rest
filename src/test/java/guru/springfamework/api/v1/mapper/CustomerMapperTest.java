@@ -27,7 +27,7 @@ public class CustomerMapperTest {
         assertThat(customerDTO.getId(), equalTo(1L));
         assertThat(customerDTO.getFirstName(), equalTo("John"));
         assertThat(customerDTO.getLastName(), equalTo("Smith"));
-        assertThat(customerDTO.getCustomer_url(), equalTo("/shop/customers/1"));
+        assertThat(customerDTO.getCustomer_url(), equalTo("/api/v1/customers/1"));
     };
 
     @Test

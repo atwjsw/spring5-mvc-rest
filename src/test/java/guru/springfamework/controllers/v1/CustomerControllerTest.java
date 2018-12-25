@@ -1,6 +1,7 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
+import guru.springfamework.exceptions.NotFoundException;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +17,11 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,7 +43,9 @@ public class CustomerControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController)
+                .setControllerAdvice(new ControllerExceptionHandler())
+                .build();
         customerDTO1 = new CustomerDTO();
         customerDTO1.setId(1L);
         customerDTO2 = new CustomerDTO();
@@ -60,7 +66,11 @@ public class CustomerControllerTest {
 
     @Test
     public void getAllCustomersReturnEmptyList() throws Exception {
-
+        when(customerService.getAllCustomers()).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.customers", hasSize(0)));
     }
 
     @Test
@@ -73,10 +83,22 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void getCustomerByIdNotFound() {
+    public void getCustomerByIdNotFound() throws Exception {
+        when(customerService.getCustomerById(anyLong())).thenThrow(NotFoundException.class);
+        mockMvc.perform(get("/api/v1/customers/-1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
     }
 
     @Test
-    public void getCustomerByIdBadInputId() {
+    public void getCustomerByIdBadInputId() throws Exception {
+
+        mockMvc.perform(get("/api/v1/customers/abc")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", equalTo("badinput.numberformat")));
+
+        verifyZeroInteractions(customerService);
     }
 }

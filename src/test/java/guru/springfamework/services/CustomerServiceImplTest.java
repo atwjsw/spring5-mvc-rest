@@ -3,6 +3,7 @@ package guru.springfamework.services;
 import guru.springfamework.api.v1.mapper.CustomerMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.domain.Customer;
+import guru.springfamework.exceptions.NotFoundException;
 import guru.springfamework.repositories.CustomerRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,10 +59,10 @@ public class CustomerServiceImplTest {
         CustomerDTO customerDTO = customerService.getCustomerById(1L);
         assertNotNull(customerDTO);
         assertThat(customerDTO.getId(), equalTo(1L));
-        assertThat(customerDTO.getCustomer_url(), equalTo("/shop/customers/1"));
+        assertThat(customerDTO.getCustomer_url(), equalTo("/api/v1/customers/1"));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotFoundException.class)
     public void getCustomerByIdReturnNull() {
         when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
         CustomerDTO customerDTO = customerService.getCustomerById(1L);
