@@ -3,6 +3,7 @@ package guru.springfamework.services;
 import guru.springfamework.api.v1.mapper.CategoryMapper;
 import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.domain.Category;
+import guru.springfamework.exceptions.ResourceNotFoundException;
 import guru.springfamework.repositories.CategoryRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -49,7 +51,7 @@ public class CategoryServiceImplTest {
         when(categoryRepository.findAll()).thenReturn(categories);
         List<CategoryDTO> categoryDTOS = categoryService.getAllCategories();
         assertNotNull(categoryDTOS);
-        assertThat(categoryDTOS.size(), is(2));
+        assertThat(categoryDTOS.size(), equalTo(2));
     }
 
     @Test
@@ -57,7 +59,14 @@ public class CategoryServiceImplTest {
         when(categoryRepository.findByName(anyString())).thenReturn(c1);
         CategoryDTO categoryDTO = categoryService.getCategoryByName("test");
         assertNotNull(categoryDTO);
-        assertThat(categoryDTO.getId(), is(1L));
-        assertThat(categoryDTO.getName(), is("category1"));
+        assertThat(categoryDTO.getId(), equalTo(1L));
+        assertThat(categoryDTO.getName(), equalTo("category1"));
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void getCategoryByNameNotFound() {
+        when(categoryRepository.findByName(anyString())).thenReturn(null);
+        CategoryDTO categoryDTO = categoryService.getCategoryByName("test");
+        assertNull(categoryDTO);
     }
 }
