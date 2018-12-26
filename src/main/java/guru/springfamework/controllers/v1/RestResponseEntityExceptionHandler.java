@@ -11,22 +11,21 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 //public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorDTO> handleNotFoundException(Exception exception, WebRequest request) {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO handleNotFoundException(Exception exception, WebRequest request) {
         log.debug("handling not found exception", exception.getMessage());
-        return new ResponseEntity<>(
-                new ErrorDTO("entity.not.found", exception.getMessage()),
-                new HttpHeaders(),
-                HttpStatus.NOT_FOUND);
+        return new ErrorDTO("entity.not.found", exception.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorDTO> handleBadInputRecipeId(Exception ex, WebRequest request) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleBadInputRecipeId(Exception ex, WebRequest request) {
         log.debug("handling number format exception", ex.getMessage());
-        return new ResponseEntity<>(new ErrorDTO("badinput.numberformat", ex.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ErrorDTO("badinput.numberformat", ex.getMessage());
     }
 }
