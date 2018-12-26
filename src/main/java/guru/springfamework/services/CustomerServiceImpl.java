@@ -42,4 +42,17 @@ public class CustomerServiceImpl implements CustomerService {
             throw new NotFoundException("Customer with id " + id + " not found");
         return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerDTOToCustomer(customerDTO)));
     }
+
+    @Override
+    public CustomerDTO patchCustomer(CustomerDTO customerDTO) {
+        return customerRepository.findById(customerDTO.getId())
+                .map(customer -> {
+                    if (customerDTO.getFirstName() != null)
+                        customer.setFirstName(customerDTO.getFirstName());
+                    if (customerDTO.getLastName() != null)
+                        customer.setLastName(customerDTO.getLastName());
+                    return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+                })
+                .orElseThrow(()-> new NotFoundException("Customer with id " + customerDTO.getId() + " not found"));
+    }
 }

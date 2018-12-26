@@ -155,4 +155,40 @@ public class CustomerControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
     }
+
+    @Test
+    public void patchCustomer() throws Exception {
+
+        CustomerDTO saveCustomerDTO = new CustomerDTO();
+        saveCustomerDTO.setId(1L);
+        saveCustomerDTO.setFirstName("John");
+        saveCustomerDTO.setLastName("Smith");
+        when(customerService.patchCustomer(any())).thenReturn(saveCustomerDTO);
+
+        mockMvc.perform(patch("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.firstName", equalTo("John")))
+                .andExpect(jsonPath("$.lastName", equalTo("Smith")));
+    }
+
+    @Test
+    public void patchCustomerNotFound() throws Exception {
+
+        CustomerDTO saveCustomerDTO = new CustomerDTO();
+        saveCustomerDTO.setId(1L);
+        saveCustomerDTO.setFirstName("John");
+        saveCustomerDTO.setLastName("Smith");
+        when(customerService.patchCustomer(any())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(patch("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
+
+
+    }
 }

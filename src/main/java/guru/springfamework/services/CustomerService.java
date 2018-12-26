@@ -12,4 +12,6 @@ public interface CustomerService {
 
     CustomerDTO createOrUpdateCustomer(CustomerDTO customerDTO);
 
+    CustomerDTO patchCustomer(CustomerDTO customerDTO);
+
 }
