@@ -2,7 +2,6 @@ package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.services.CategoryService;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -54,7 +53,7 @@ public class CategoryControllerTest {
     @Test
     public void testListCategories() throws Exception {
         when(categoryService.getAllCategories()).thenReturn(categories);
-        mockMvc.perform(get("/api/v1/categories")
+        mockMvc.perform(get(CategoryController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categories", hasSize(2)));
@@ -63,7 +62,7 @@ public class CategoryControllerTest {
     @Test
     public void testGetByName() throws Exception {
         when(categoryService.getCategoryByName(anyString())).thenReturn(c1);
-        mockMvc.perform(get("/api/v1/categories/category1")
+        mockMvc.perform(get(CategoryController.BASE_URL + "/category1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo("category1")));

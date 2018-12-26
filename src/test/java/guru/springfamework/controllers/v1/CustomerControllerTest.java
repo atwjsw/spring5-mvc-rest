@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.exceptions.NotFoundException;
 import guru.springfamework.services.CustomerService;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -59,7 +58,7 @@ public class CustomerControllerTest {
     @Test
     public void getAllCustomers() throws Exception {
         when(customerService.getAllCustomers()).thenReturn(customerDTOs);
-        mockMvc.perform(get("/api/v1/customers")
+        mockMvc.perform(get(CustomerController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(2)));
@@ -68,7 +67,7 @@ public class CustomerControllerTest {
     @Test
     public void getAllCustomersReturnEmptyList() throws Exception {
         when(customerService.getAllCustomers()).thenReturn(new ArrayList<>());
-        mockMvc.perform(get("/api/v1/customers")
+        mockMvc.perform(get(CustomerController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(0)));
@@ -77,7 +76,7 @@ public class CustomerControllerTest {
     @Test
     public void getCustomerById() throws Exception{
         when(customerService.getCustomerById(anyLong())).thenReturn(customerDTO1);
-        mockMvc.perform(get("/api/v1/customers/1")
+        mockMvc.perform(get(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)));
@@ -86,7 +85,7 @@ public class CustomerControllerTest {
     @Test
     public void getCustomerByIdNotFound() throws Exception {
         when(customerService.getCustomerById(anyLong())).thenThrow(NotFoundException.class);
-        mockMvc.perform(get("/api/v1/customers/-1")
+        mockMvc.perform(get(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
@@ -95,7 +94,7 @@ public class CustomerControllerTest {
     @Test
     public void getCustomerByIdBadInputId() throws Exception {
 
-        mockMvc.perform(get("/api/v1/customers/abc")
+        mockMvc.perform(get(CustomerController.BASE_URL + "/abc")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code", equalTo("badinput.numberformat")));
@@ -112,7 +111,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setLastName("Smith");
         when(customerService.createOrUpdateCustomer(any())).thenReturn(saveCustomerDTO);
 
-        mockMvc.perform(post("/api/v1/customers")
+        mockMvc.perform(post(CustomerController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isCreated())
@@ -130,7 +129,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setLastName("Smith");
         when(customerService.createOrUpdateCustomer(any())).thenReturn(saveCustomerDTO);
 
-        mockMvc.perform(put("/api/v1/customers/1")
+        mockMvc.perform(put(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isOk())
@@ -148,7 +147,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setLastName("Smith");
         when(customerService.createOrUpdateCustomer(any())).thenThrow(NotFoundException.class);
 
-        mockMvc.perform(put("/api/v1/customers/1")
+        mockMvc.perform(put(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isNotFound())
@@ -164,7 +163,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setLastName("Smith");
         when(customerService.patchCustomer(any())).thenReturn(saveCustomerDTO);
 
-        mockMvc.perform(patch("/api/v1/customers/1")
+        mockMvc.perform(patch(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isOk())
@@ -182,7 +181,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setLastName("Smith");
         when(customerService.patchCustomer(any())).thenThrow(NotFoundException.class);
 
-        mockMvc.perform(patch("/api/v1/customers/1")
+        mockMvc.perform(patch(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isNotFound())
@@ -192,7 +191,7 @@ public class CustomerControllerTest {
     @Test
     public void deleteCustomer() throws Exception {
 
-             mockMvc.perform(delete("/api/v1/customers/1")
+             mockMvc.perform(delete(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
