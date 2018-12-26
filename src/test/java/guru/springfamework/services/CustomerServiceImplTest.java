@@ -3,12 +3,10 @@ package guru.springfamework.services;
 import guru.springfamework.api.v1.mapper.CustomerMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.domain.Customer;
-import guru.springfamework.exceptions.NotFoundException;
+import guru.springfamework.exceptions.ResourceNotFoundException;
 import guru.springfamework.repositories.CustomerRepository;
-import org.aspectj.weaver.ast.Not;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -64,7 +62,7 @@ public class CustomerServiceImplTest {
         assertThat(customerDTO.getCustomer_url(), equalTo("/api/v1/customers/1"));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void getCustomerByIdReturnNull() {
         when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
         CustomerDTO customerDTO = customerService.getCustomerById(1L);
@@ -79,7 +77,7 @@ public class CustomerServiceImplTest {
         assertThat(savedCustomerDTO.getId(), equalTo(1L));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void createOrUpdateCustomerNotFound() {
         when(customerRepository.existsById(any())).thenReturn(false);
         CustomerDTO customerDTO = new CustomerDTO();

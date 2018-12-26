@@ -2,7 +2,7 @@ package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.CustomerMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
-import guru.springfamework.exceptions.NotFoundException;
+import guru.springfamework.exceptions.ResourceNotFoundException;
 import guru.springfamework.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +32,14 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
                 .map(customerMapper::customerToCustomerDTO)
-                .orElseThrow(() -> new NotFoundException("Customer with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
     }
 
     @Override
     public CustomerDTO createOrUpdateCustomer(CustomerDTO customerDTO) {
         Long id = customerDTO.getId();
         if ( id != null && !customerRepository.existsById(id))
-            throw new NotFoundException("Customer with id " + id + " not found");
+            throw new ResourceNotFoundException("Customer with id " + id + " not found");
         return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerDTOToCustomer(customerDTO)));
     }
 
@@ -53,7 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
                         customer.setLastName(customerDTO.getLastName());
                     return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
                 })
-                .orElseThrow(()-> new NotFoundException("Customer with id " + customerDTO.getId() + " not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("Customer with id " + customerDTO.getId() + " not found"));
     }
 
     @Override

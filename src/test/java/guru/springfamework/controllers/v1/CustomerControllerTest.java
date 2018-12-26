@@ -2,7 +2,7 @@ package guru.springfamework.controllers.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
-import guru.springfamework.exceptions.NotFoundException;
+import guru.springfamework.exceptions.ResourceNotFoundException;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +43,7 @@ public class CustomerControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(customerController)
-                .setControllerAdvice(new ControllerExceptionHandler())
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
                 .build();
         customerDTO1 = new CustomerDTO();
         customerDTO1.setId(1L);
@@ -84,7 +83,7 @@ public class CustomerControllerTest {
 
     @Test
     public void getCustomerByIdNotFound() throws Exception {
-        when(customerService.getCustomerById(anyLong())).thenThrow(NotFoundException.class);
+        when(customerService.getCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
         mockMvc.perform(get(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -145,7 +144,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setId(1L);
         saveCustomerDTO.setFirstName("John");
         saveCustomerDTO.setLastName("Smith");
-        when(customerService.createOrUpdateCustomer(any())).thenThrow(NotFoundException.class);
+        when(customerService.createOrUpdateCustomer(any())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(put(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -179,7 +178,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setId(1L);
         saveCustomerDTO.setFirstName("John");
         saveCustomerDTO.setLastName("Smith");
-        when(customerService.patchCustomer(any())).thenThrow(NotFoundException.class);
+        when(customerService.patchCustomer(any())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(patch(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
