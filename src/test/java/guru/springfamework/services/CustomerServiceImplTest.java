@@ -20,7 +20,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CustomerServiceImplTest {
 
@@ -87,5 +87,12 @@ public class CustomerServiceImplTest {
 
         CustomerDTO savedCustomerDTO = customerService.createOrUpdateCustomer(customerDTO);
         assertNull(savedCustomerDTO);
+    }
+
+    @Test
+    public void deleteCustomerById() {
+        Long id = 1L;
+        customerService.deleteCustomerById(id);
+        verify(customerRepository, times(1)).deleteById(anyLong());
     }
 }

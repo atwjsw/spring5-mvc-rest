@@ -21,8 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -188,7 +187,15 @@ public class CustomerControllerTest {
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
+    }
 
+    @Test
+    public void deleteCustomer() throws Exception {
 
+             mockMvc.perform(delete("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+             verify(customerService, times(1)).deleteCustomerById(anyLong());
     }
 }
