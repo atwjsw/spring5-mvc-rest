@@ -34,6 +34,26 @@ public class CustomerMapperTest {
     public void customerToCustomerDTONullValue() {
         Customer customer = null;
         CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+        assertNull(customerDTO);
+    };
+
+    @Test
+    public void customerDTOToCustomer() {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(1L);
+        customerDTO.setFirstName("John");
+        customerDTO.setLastName("Smith");
+        customerDTO.setCustomer_url("/api/v1/customers/1");
+        Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
+        assertThat(customer.getId(), equalTo(1L));
+        assertThat(customer.getFirstName(), equalTo("John"));
+        assertThat(customer.getLastName(), equalTo("Smith"));
+    }
+
+    @Test
+    public void customerDTOToCustomerNullValue() {
+        CustomerDTO customerDTO = null;
+        Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
         assertNull(customer);
     };
 }

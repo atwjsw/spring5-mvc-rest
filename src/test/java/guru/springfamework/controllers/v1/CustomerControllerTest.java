@@ -1,8 +1,10 @@
 package guru.springfamework.controllers.v1;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.exceptions.NotFoundException;
 import guru.springfamework.services.CustomerService;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,5 +103,26 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.code", equalTo("badinput.numberformat")));
 
         verifyZeroInteractions(customerService);
+    }
+
+    @Test
+    public void createCustomer() throws Exception{
+
+        CustomerDTO saveCustomerDTO = new CustomerDTO();
+        saveCustomerDTO.setId(1L);
+        saveCustomerDTO.setFirstName("John");
+        saveCustomerDTO.setLastName("Smith");
+        when(customerService.createCustomer(any())).thenReturn(saveCustomerDTO);
+
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.firstName", equalTo("John")))
+                .andExpect(jsonPath("$.lastName", equalTo("Smith")));
+
+
+
     }
 }

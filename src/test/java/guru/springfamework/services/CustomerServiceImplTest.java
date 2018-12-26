@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -67,5 +68,14 @@ public class CustomerServiceImplTest {
         when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
         CustomerDTO customerDTO = customerService.getCustomerById(1L);
         assertNull(customerDTO);
+    }
+
+    @Test
+    public void createCustomer() {
+        when(customerRepository.save(any())).thenReturn(customer1);
+        CustomerDTO savedCustomerDTO = customerService.createCustomer(new CustomerDTO());
+        assertNotNull(savedCustomerDTO);
+        assertThat(savedCustomerDTO.getId(), equalTo(1L));
+
     }
 }
