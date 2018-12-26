@@ -37,6 +37,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO createOrUpdateCustomer(CustomerDTO customerDTO) {
+        Long id = customerDTO.getId();
+        if ( id != null && !customerRepository.existsById(id))
+            throw new NotFoundException("Customer with id " + id + " not found");
         return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerDTOToCustomer(customerDTO)));
     }
 }

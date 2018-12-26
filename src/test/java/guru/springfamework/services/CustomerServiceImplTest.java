@@ -5,6 +5,7 @@ import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.domain.Customer;
 import guru.springfamework.exceptions.NotFoundException;
 import guru.springfamework.repositories.CustomerRepository;
+import org.aspectj.weaver.ast.Not;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -76,6 +77,15 @@ public class CustomerServiceImplTest {
         CustomerDTO savedCustomerDTO = customerService.createOrUpdateCustomer(new CustomerDTO());
         assertNotNull(savedCustomerDTO);
         assertThat(savedCustomerDTO.getId(), equalTo(1L));
+    }
 
+    @Test(expected = NotFoundException.class)
+    public void createOrUpdateCustomerNotFound() {
+        when(customerRepository.existsById(any())).thenReturn(false);
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(1L);
+
+        CustomerDTO savedCustomerDTO = customerService.createOrUpdateCustomer(customerDTO);
+        assertNull(savedCustomerDTO);
     }
 }

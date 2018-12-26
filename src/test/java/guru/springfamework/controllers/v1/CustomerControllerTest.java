@@ -139,4 +139,20 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.firstName", equalTo("John")))
                 .andExpect(jsonPath("$.lastName", equalTo("Smith")));
     }
+
+    @Test
+    public void updateCustomerNotFound() throws Exception {
+
+        CustomerDTO saveCustomerDTO = new CustomerDTO();
+        saveCustomerDTO.setId(1L);
+        saveCustomerDTO.setFirstName("John");
+        saveCustomerDTO.setLastName("Smith");
+        when(customerService.createOrUpdateCustomer(any())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
+    }
 }
