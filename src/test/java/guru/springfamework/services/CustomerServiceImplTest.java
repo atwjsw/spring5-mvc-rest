@@ -71,9 +71,9 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    public void createCustomer() {
+    public void createOrUpdateCustomer() {
         when(customerRepository.save(any())).thenReturn(customer1);
-        CustomerDTO savedCustomerDTO = customerService.createCustomer(new CustomerDTO());
+        CustomerDTO savedCustomerDTO = customerService.createOrUpdateCustomer(new CustomerDTO());
         assertNotNull(savedCustomerDTO);
         assertThat(savedCustomerDTO.getId(), equalTo(1L));
 

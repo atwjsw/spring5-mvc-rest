@@ -24,8 +24,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,7 +111,7 @@ public class CustomerControllerTest {
         saveCustomerDTO.setId(1L);
         saveCustomerDTO.setFirstName("John");
         saveCustomerDTO.setLastName("Smith");
-        when(customerService.createCustomer(any())).thenReturn(saveCustomerDTO);
+        when(customerService.createOrUpdateCustomer(any())).thenReturn(saveCustomerDTO);
 
         mockMvc.perform(post("/api/v1/customers")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -121,8 +120,23 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.firstName", equalTo("John")))
                 .andExpect(jsonPath("$.lastName", equalTo("Smith")));
+    }
 
+    @Test
+    public void updateCustomer() throws Exception {
 
+        CustomerDTO saveCustomerDTO = new CustomerDTO();
+        saveCustomerDTO.setId(1L);
+        saveCustomerDTO.setFirstName("John");
+        saveCustomerDTO.setLastName("Smith");
+        when(customerService.createOrUpdateCustomer(any())).thenReturn(saveCustomerDTO);
 
+        mockMvc.perform(put("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.firstName", equalTo("John")))
+                .andExpect(jsonPath("$.lastName", equalTo("Smith")));
     }
 }
