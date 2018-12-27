@@ -24,14 +24,14 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> getAllCustomers() {
         return customerRepository.findAll()
                 .stream()
-                .map(customerMapper::customerToCustomerDTO)
+                .map(customerMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
-                .map(customerMapper::customerToCustomerDTO)
+                .map(customerMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
     }
 
@@ -40,7 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
         Long id = customerDTO.getId();
         if ( id != null && !customerRepository.existsById(id))
             throw new ResourceNotFoundException("Customer with id " + id + " not found");
-        return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerDTOToCustomer(customerDTO)));
+        return customerMapper.toDTO(customerRepository.save(customerMapper.toEntity(customerDTO)));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
                         customer.setFirstName(customerDTO.getFirstName());
                     if (customerDTO.getLastName() != null)
                         customer.setLastName(customerDTO.getLastName());
-                    return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+                    return customerMapper.toDTO(customerRepository.save(customer));
                 })
                 .orElseThrow(()-> new ResourceNotFoundException("Customer with id " + customerDTO.getId() + " not found"));
     }

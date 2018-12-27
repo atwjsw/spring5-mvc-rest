@@ -25,11 +25,11 @@ public class CustomerServiceImplTest {
     @Mock
     CustomerRepository customerRepository;
 
-    CustomerService customerService;
+    private CustomerService customerService;
 
-    List<Customer> customers;
-    Customer customer1;
-    Customer customer2;
+    private List<Customer> customers;
+    private Customer customer1;
+    private Customer customer2;
 
     @Before
     public void setUp() throws Exception {
@@ -67,6 +67,7 @@ public class CustomerServiceImplTest {
         when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
         CustomerDTO customerDTO = customerService.getCustomerById(1L);
         assertNull(customerDTO);
+        verifyZeroInteractions(customerRepository.save(any()));
     }
 
     @Test
@@ -85,6 +86,7 @@ public class CustomerServiceImplTest {
 
         CustomerDTO savedCustomerDTO = customerService.createOrUpdateCustomer(customerDTO);
         assertNull(savedCustomerDTO);
+        verifyZeroInteractions(customerRepository.save(any()));
     }
 
     @Test

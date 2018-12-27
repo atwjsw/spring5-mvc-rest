@@ -24,7 +24,7 @@ public class CustomerMapperTest {
         customer.setId(1L);
         customer.setFirstName("John");
         customer.setLastName("Smith");
-        CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+        CustomerDTO customerDTO = customerMapper.toDTO(customer);
         assertThat(customerDTO.getId(), equalTo(1L));
         assertThat(customerDTO.getFirstName(), equalTo("John"));
         assertThat(customerDTO.getLastName(), equalTo("Smith"));
@@ -34,7 +34,7 @@ public class CustomerMapperTest {
     @Test
     public void customerToCustomerDTONullValue() {
         Customer customer = null;
-        CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+        CustomerDTO customerDTO = customerMapper.toDTO(customer);
         assertNull(customerDTO);
     };
 
@@ -45,7 +45,7 @@ public class CustomerMapperTest {
         customerDTO.setFirstName("John");
         customerDTO.setLastName("Smith");
         customerDTO.setCustomer_url(CustomerController.BASE_URL + "/1");
-        Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
+        Customer customer = customerMapper.toEntity(customerDTO);
         assertThat(customer.getId(), equalTo(1L));
         assertThat(customer.getFirstName(), equalTo("John"));
         assertThat(customer.getLastName(), equalTo("Smith"));
@@ -54,7 +54,7 @@ public class CustomerMapperTest {
     @Test
     public void customerDTOToCustomerNullValue() {
         CustomerDTO customerDTO = null;
-        Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
+        Customer customer = customerMapper.toEntity(customerDTO);
         assertNull(customer);
     };
 }

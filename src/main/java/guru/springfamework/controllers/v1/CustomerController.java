@@ -2,14 +2,14 @@ package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.api.v1.model.CustomerListDTO;
-import guru.springfamework.repositories.CategoryRepository;
 import guru.springfamework.services.CustomerService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static guru.springfamework.controllers.v1.CustomerController.BASE_URL;
+
 @RestController
-@RequestMapping(CustomerController.BASE_URL)
+@RequestMapping(BASE_URL)
 public class CustomerController {
 
     public static final String BASE_URL = "/api/v1/customers";
