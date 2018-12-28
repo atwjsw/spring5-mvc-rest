@@ -63,6 +63,7 @@ public class VendorControllerTest {
         when(vendorService.getAllVendors()).thenReturn(vendors);
 
         mockMvc.perform(get(VendorController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(2)));
@@ -73,6 +74,7 @@ public class VendorControllerTest {
         when(vendorService.getAllVendors()).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get(VendorController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(0)));
@@ -83,6 +85,7 @@ public class VendorControllerTest {
         when(vendorService.getVendorById(anyLong())).thenReturn(v1);
 
         mockMvc.perform(get(VendorController.BASE_URL +"/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)));
@@ -93,6 +96,7 @@ public class VendorControllerTest {
         when(vendorService.getVendorById(anyLong())).thenThrow(new ResourceNotFoundException());
 
         mockMvc.perform(get(VendorController.BASE_URL +"/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
@@ -102,6 +106,7 @@ public class VendorControllerTest {
     public void getVendorByIdBadInputId() throws Exception {
 
         mockMvc.perform(get(VendorController.BASE_URL + "/abc")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code", equalTo("badinput.numberformat")));
@@ -118,6 +123,7 @@ public class VendorControllerTest {
         when(vendorService.createOrUpdateVendor(any())).thenReturn(saveVendorDTO);
 
         mockMvc.perform(post(VendorController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveVendorDTO)))
                 .andExpect(status().isCreated())
@@ -134,6 +140,7 @@ public class VendorControllerTest {
         when(vendorService.createOrUpdateVendor(any())).thenReturn(saveVendorDTO);
 
         mockMvc.perform(put(VendorController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveVendorDTO)))
                 .andExpect(status().isOk())
@@ -150,6 +157,7 @@ public class VendorControllerTest {
         when(vendorService.createOrUpdateVendor(any())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(put(VendorController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveVendorDTO)))
                 .andExpect(status().isNotFound())
@@ -165,6 +173,7 @@ public class VendorControllerTest {
         when(vendorService.patchVendor(any())).thenReturn(saveVendorDTO);
 
         mockMvc.perform(patch(VendorController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveVendorDTO)))
                 .andExpect(status().isOk())
@@ -181,6 +190,7 @@ public class VendorControllerTest {
         when(vendorService.patchVendor(any())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(patch(VendorController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveVendorDTO)))
                 .andExpect(status().isNotFound())
@@ -191,6 +201,7 @@ public class VendorControllerTest {
     public void deleteVendorById() throws Exception {
 
         mockMvc.perform(delete(VendorController.BASE_URL +"/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 

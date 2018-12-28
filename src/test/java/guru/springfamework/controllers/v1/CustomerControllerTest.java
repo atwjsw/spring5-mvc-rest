@@ -58,6 +58,7 @@ public class CustomerControllerTest {
     public void getAllCustomers() throws Exception {
         when(customerService.getAllCustomers()).thenReturn(customerDTOs);
         mockMvc.perform(get(CustomerController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(2)));
@@ -67,6 +68,7 @@ public class CustomerControllerTest {
     public void getAllCustomersReturnEmptyList() throws Exception {
         when(customerService.getAllCustomers()).thenReturn(new ArrayList<>());
         mockMvc.perform(get(CustomerController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(0)));
@@ -76,6 +78,7 @@ public class CustomerControllerTest {
     public void getCustomerById() throws Exception{
         when(customerService.getCustomerById(anyLong())).thenReturn(customerDTO1);
         mockMvc.perform(get(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)));
@@ -85,6 +88,7 @@ public class CustomerControllerTest {
     public void getCustomerByIdNotFound() throws Exception {
         when(customerService.getCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
         mockMvc.perform(get(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", equalTo("entity.not.found")));
@@ -94,6 +98,7 @@ public class CustomerControllerTest {
     public void getCustomerByIdBadInputId() throws Exception {
 
         mockMvc.perform(get(CustomerController.BASE_URL + "/abc")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code", equalTo("badinput.numberformat")));
@@ -111,6 +116,7 @@ public class CustomerControllerTest {
         when(customerService.createOrUpdateCustomer(any())).thenReturn(saveCustomerDTO);
 
         mockMvc.perform(post(CustomerController.BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isCreated())
@@ -129,6 +135,7 @@ public class CustomerControllerTest {
         when(customerService.createOrUpdateCustomer(any())).thenReturn(saveCustomerDTO);
 
         mockMvc.perform(put(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isOk())
@@ -147,6 +154,7 @@ public class CustomerControllerTest {
         when(customerService.createOrUpdateCustomer(any())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(put(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isNotFound())
@@ -163,6 +171,7 @@ public class CustomerControllerTest {
         when(customerService.patchCustomer(any())).thenReturn(saveCustomerDTO);
 
         mockMvc.perform(patch(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isOk())
@@ -181,6 +190,7 @@ public class CustomerControllerTest {
         when(customerService.patchCustomer(any())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(patch(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(saveCustomerDTO)))
                 .andExpect(status().isNotFound())
