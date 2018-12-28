@@ -60,7 +60,7 @@ public class CustomerServiceImplTest {
         CustomerDTO customerDTO = customerService.getCustomerById(1L);
         assertNotNull(customerDTO);
         assertThat(customerDTO.getId(), equalTo(1L));
-//        assertThat(customerDTO.getCustomerUrl(), equalTo("/api/v1/customers/1"));
+        assertThat(customerDTO.getCustomerUrl(), equalTo("/api/v1/customers/1"));
     }
 
     @Test(expected = ResourceNotFoundException.class)
