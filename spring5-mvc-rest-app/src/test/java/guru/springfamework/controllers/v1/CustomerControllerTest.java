@@ -1,8 +1,9 @@
 package guru.springfamework.controllers.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guru.springfamework.api.v1.model.CustomerDTO;
+//import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.exceptions.ResourceNotFoundException;
+import guru.springfamework.model.CustomerDTO;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
